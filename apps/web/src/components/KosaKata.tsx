@@ -470,7 +470,7 @@ export default function KosaKataPage() {
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
               placeholder="Cari kata..."
-              className="bg-white pl-9"
+              className="bg-white pl-9 shadow-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -478,7 +478,7 @@ export default function KosaKataPage() {
         </div>
 
         <div className="w-full space-y-4">
-          <Card>
+          <Card className='shadow-none'>
             <CardHeader className="pb-3">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
@@ -503,7 +503,7 @@ export default function KosaKataPage() {
                 <div className="flex items-center gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8">
+                      <Button variant="outline" size="sm" className="h-8 shadow-none">
                         {selectedCategory === 'all'
                           ? 'Semua Kategori'
                           : categories.find((c) => c.id === selectedCategory)
