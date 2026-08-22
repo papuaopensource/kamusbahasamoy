@@ -71,11 +71,14 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           command_timeout: 5m
           script: |
-            set -eu
+            set -eu            
 
             API_DIR="/var/www/kamusbahasamoy/apps/api"
 
             cd "$API_DIR"
+
+            export PATH="$HOME/.local/bin:$PATH"
+            
             uv sync --locked --no-dev
             ./.venv/bin/alembic upgrade head
             ./.venv/bin/python scripts/seed.py
