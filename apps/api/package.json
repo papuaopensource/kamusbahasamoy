@@ -4,13 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "uv run uvicorn app.main:app --reload --port 5000",
-    "db:exec": "docker exec -it kamus-db psql -U postgres -d kamus",
-    "docker:migration": "docker exec -it kamus-api uv run alembic upgrade head",
-    "docker:migration:create": "docker exec -it kamus-api uv run alembic revision --autogenerate -m",
-    "docker:seed": "docker exec -it kamus-api uv run python scripts/seed.py",
-    "docker:init": "pnpm docker:migration && pnpm docker:seed",
-    "docker:rm": "docker stop kamus-api kamus-db && docker rm kamus-api kamus-db",
-    "docker:clean": "pnpm docker:rm && docker volume rm kamusbahasamoy_postgres_data",
+    "db:migrate": "uv run alembic upgrade head",
+    "db:migration:create": "uv run alembic revision --autogenerate -m",
+    "db:seed": "uv run python scripts/seed.py",
     "lint": "uv run ruff check .",
     "format": "uv run ruff format .",
     "test": "PYTHONPATH=. uv run pytest"

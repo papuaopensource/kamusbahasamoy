@@ -5,27 +5,24 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "preview": "turbo preview",
-    "pre-commit:install": "cd apps/api && uv run pre-commit install --install-hooks -c ../../.pre-commit-config.yaml",
-    "pre-commit": "cd apps/api && uv run pre-commit run --all-files -c ../../.pre-commit-config.yaml",
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",
     "format": "turbo format",
     "test": "turbo test",
     "check:all": "pnpm lint && pnpm format && pnpm test",
-    "docker:up": "docker compose up -d --build",
-    "docker:down": "docker compose down",
-    "docker:migration": "pnpm --filter @kamusbahasamoy/api docker:migration",
-    "docker:seed": "pnpm --filter @kamusbahasamoy/api docker:seed",
-    "db:exec": "pnpm --filter @kamusbahasamoy/api db:exec",
-    "docker:rm": "pnpm --filter @kamusbahasamoy/api docker:rm",
-    "docker:init": "pnpm --filter @kamusbahasamoy/api docker:init",
-    "docker:clean": "pnpm --filter @kamusbahasamoy/api docker:clean"
+    "db:migrate": "pnpm --filter @kamusbahasamoy/api db:migrate",
+    "db:migration:create": "pnpm --filter @kamusbahasamoy/api db:migration:create",
+    "db:seed": "pnpm --filter @kamusbahasamoy/api db:seed",
+    "db:init": "pnpm db:migrate && pnpm db:seed"
   },
   "devDependencies": {
     "prettier": "^3.8.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "turbo": "^2.5.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   },
   "packageManager": "pnpm@10.20.0",
   "pnpm": {

@@ -16,7 +16,7 @@ kamusbahasamoy/
 
 ## Prasyarat
 
-- [Node.js](https://nodejs.org/) 20 atau lebih baru
+- [Node.js](https://nodejs.org/) 22.12 atau lebih baru
 - [pnpm](https://pnpm.io/installation) 10 atau lebih baru
 - [Python](https://www.python.org/) 3.13 atau lebih baru
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) — package manager Python
@@ -39,23 +39,14 @@ kamusbahasamoy/
 3. Salin file environment:
 
    ```bash
-   # Untuk development lokal (host)
    cp apps/api/.env.example apps/api/.env
    cp apps/web/.env.example apps/web/.env
-
-   # UNTUK DOCKER (Global)
-   cp .env.example .env
    ```
 
 4. Jalankan migrasi database dan isi data awal:
 
    ```bash
-   # Melalui host
-   cd apps/api && uv run alembic upgrade head && uv run python scripts/seed.py
-
-   # ATAU melalui Docker (jika kontainer sudah jalan)
-   pnpm docker:migration
-   pnpm docker:seed
+   pnpm db:init
    ```
 
 5. Jalankan semua aplikasi sekaligus:
@@ -72,54 +63,22 @@ kamusbahasamoy/
 
 ```bash
 # Hanya frontend
-pnpm --filter @kamus-bahasa-moy/web dev
+pnpm --filter @kamusbahasamoy/web dev
 
 # Hanya backend
-pnpm --filter @kamus-bahasa-moy/api dev
-```
-
-## Menjalankan Development menggunakan Docker (Opsional)
-
-```bash
-# Menjalakan containers (DB, API, Frontend)
-pnpm run docker:up
-
-# Menjalankan migration + seed
-pnpm run docker:init
-
-# Stop containers
-pnpm run docker:down
-
-# Hapus containers & volume data
-pnpm docker:rm
+pnpm --filter @kamusbahasamoy/api dev
 ```
 
 ### Database
 
-Secara default, API menggunakan **SQLite**. Data disimpan di `apps/api/kamus.db`.
+Secara default, API menggunakan **SQLite**. Data disimpan di `apps/api/kamus.db` dan konfigurasi berada di `apps/api/.env`.
 
 Jika ingin menggunakan **PostgreSQL**:
 
-Pastikan file `.env` ada di **root** (bisa copy dari `.env.example`).
-Contoh:
+Ubah `DATABASE_URL` di `apps/api/.env`, misalnya:
 
 ```sh
-#! Kamus Bahasa Moy - Global Environment Variables
-
-#! Backend
-# Database configuration for PostgreSQL
-DB_USER=postgres
-DB_PASS=postgres
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=kastau
-
-# Database configuration for SQLite (uncomment the line below and comment out the above lines)
-#DATABASE_URL=sqlite:///./kamus.db
-
-
-#! Frontend
-PUBLIC_API_URL=http://localhost:5000
+DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/kamus
 ```
 
 ## Build untuk Production
@@ -158,13 +117,6 @@ pnpm run format
 
 pnpm run check:all
 ```
-
-Gunakan`pre-commit` untuk memastikan semua kode yang di-commit sudah bersih.
-
-- Install pre-commit:
-  ```bash
-  pnpm run pre-commit:install
-  ```
 
 ### Menjalankan Test
 

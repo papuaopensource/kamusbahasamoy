@@ -1,7 +1,0 @@
-node_modules
-dist
-.astro
-.env
-.dockerignore
-Dockerfile
-.DS_Store
