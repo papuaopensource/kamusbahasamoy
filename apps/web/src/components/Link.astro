@@ -1,43 +1,38 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
-type Props = HTMLAttributes<'a'> & {
+import type { HTMLAttributes } from "astro/types";
+type Props = HTMLAttributes<"a"> & {
   href: string | { pathname: string; query?: Record<string, string> };
   activeClass?: string;
 };
-const { href: rawHref, style, activeClass, ...attrs } = Astro.props as Props;
+const { href: rawHref, activeClass, ...attrs } = Astro.props as Props;
 const href = (() => {
-  if (typeof rawHref === 'string') {
+  if (typeof rawHref === "string") {
     return rawHref;
   }
   const { pathname, query } = rawHref;
   const searchParams = new URLSearchParams(query);
   return `${pathname}?${searchParams.toString()}`;
 })();
-const site = Astro.site;
 const { pathname } = Astro.url;
 function isActiveLink(url: string): boolean {
-  return url === pathname || url === '.' || url === './';
+  return url === pathname || url === "." || url === "./";
 }
 function isExternalLink(url: string): boolean {
   return URL.canParse(url);
 }
-function isInternalLink(url: string): boolean {
-  return URL.canParse(url, site?.toString());
-}
 const isExternal = isExternalLink(href);
-const isInternal = isInternalLink(href);
 const isActive = isActiveLink(href);
 let relAttribute: object = {};
 let targetAttribute: object = {};
 let combinedAttrs = { ...attrs };
 
 if (isExternal) {
-  relAttribute = { rel: 'external noreferrer' };
+  relAttribute = { rel: "external noreferrer" };
   // rel 'nooppener' is implict with target '_blank' - https://www.stefanjudis.com/today-i-learned/target-blank-implies-rel-noopener/
-  targetAttribute = { target: '_blank' };
+  targetAttribute = { target: "_blank" };
 } else if (isActive && activeClass) {
   // Hanya tambahkan activeClass jika diberikan dan link aktif
-  const originalClass = attrs.class || '';
+  const originalClass = attrs.class || "";
   combinedAttrs = {
     ...attrs,
     class: `${originalClass} ${activeClass}`.trim(),

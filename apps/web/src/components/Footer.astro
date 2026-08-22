@@ -1,30 +1,28 @@
 ---
-import Link from './Link.astro';
-import { Button } from '@/components/ui/button';
+const year = new Date().getFullYear();
 ---
 
-<footer class="sticky top-[100vh] mt-auto border-t bg-white py-6 md:py-0">
+<footer class="border-border bg-background mt-auto border-t py-6">
   <div
-    class="text-muted-foreground mx-auto flex max-w-screen-xl flex-col px-4 text-sm md:h-16 md:flex-row md:items-center md:justify-between md:px-8"
+    class="text-muted-foreground mx-auto flex max-w-7xl flex-col gap-3 px-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-6"
   >
-    <p>© 2025 Papua Open Source. All rights reserved.</p>
-    <div class="mt-4 flex gap-4 md:mt-0">
-      <Button variant="link" size="sm">
-        <Link
-          href="/kebijakan-privasi/"
-          class="font-normal text-slate-500 hover:text-slate-700"
-          activeClass="text-slate-700 hover:text-slate-900"
-          >Kebijakan Privasi</Link
-        >
-      </Button>
-      <Button variant="link" size="sm">
-        <Link
-          href="/syarat-ketentuan/"
-          class="font-normal text-slate-500 hover:text-slate-700"
-          activeClass="text-slate-700 hover:text-slate-900"
-          >Syarat dan Ketentuan</Link
-        >
-      </Button>
-    </div>
+    <p>© {year} Papua Open Source</p>
+    <nav aria-label="Informasi" class="flex items-center gap-5">
+      <a href="/kontak/" class="hover:text-foreground transition-colors">
+        kontak
+      </a>
+      <a
+        href="/kebijakan-privasi/"
+        class="hover:text-foreground transition-colors"
+      >
+        privasi
+      </a>
+      <a
+        href="/syarat-ketentuan/"
+        class="hover:text-foreground transition-colors"
+      >
+        ketentuan
+      </a>
+    </nav>
   </div>
 </footer>

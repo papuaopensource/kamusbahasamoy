@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:5000';
+const API_URL = import.meta.env.PUBLIC_API_URL ?? "http://localhost:5000";
 
 export interface Meaning {
   id: number;
@@ -51,27 +51,27 @@ export interface SongDetail extends SongSummary {
 }
 
 export async function fetchAllWords(letter?: string): Promise<WordSummary[]> {
-  const params = new URLSearchParams({ limit: '2000' });
-  if (letter) params.set('letter', letter);
+  const params = new URLSearchParams({ limit: "2000" });
+  if (letter) params.set("letter", letter);
   const res = await fetch(`${API_URL}/dictionary?${params}`);
-  if (!res.ok) throw new Error('Gagal mengambil data kamus');
+  if (!res.ok) throw new Error("Gagal mengambil data kamus");
   return res.json();
 }
 
 export async function fetchWord(id: number): Promise<WordDetail> {
   const res = await fetch(`${API_URL}/dictionary/${id}`);
-  if (!res.ok) throw new Error('Kata tidak ditemukan');
+  if (!res.ok) throw new Error("Kata tidak ditemukan");
   return res.json();
 }
 
 export async function fetchAllSongs(): Promise<SongSummary[]> {
   const res = await fetch(`${API_URL}/songs`);
-  if (!res.ok) throw new Error('Gagal mengambil data lagu');
+  if (!res.ok) throw new Error("Gagal mengambil data lagu");
   return res.json();
 }
 
 export async function fetchSong(id: number): Promise<SongDetail> {
   const res = await fetch(`${API_URL}/songs/${id}`);
-  if (!res.ok) throw new Error('Lagu tidak ditemukan');
+  if (!res.ok) throw new Error("Lagu tidak ditemukan");
   return res.json();
 }

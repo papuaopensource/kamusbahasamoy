@@ -1,211 +1,130 @@
 ---
-import Link from '@/components/Link.astro';
-import { FileText, Home } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import MainLayout from '@/layouts/MainLayout.astro';
+import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
 <MainLayout
-  title="Kebijakan Privasi"
-  description="Kebijakan privasi aplikasi Kamus Bahasa Moy."
+  title="Syarat dan Ketentuan"
+  description="Ketentuan penggunaan situs Kamus Bahasa Moy."
 >
-  <div class="mx-auto flex max-w-screen-xl flex-col px-4 py-6 md:px-8">
-    <div class="mb-6 flex items-center gap-2">
-      <Home className="text-muted-foreground h-4 w-4" />
-      <Link
-        href="/"
-        class="text-muted-foreground hover:text-foreground text-sm"
-      >
-        Beranda
-      </Link>
-      <span class="text-muted-foreground mx-1">/</span>
-      <span class="text-sm font-medium">Syarat dan Ketentuan</span>
-    </div>
-
-    <div class="mx-auto grid max-w-3xl gap-8">
-      <div class="text-center">
-        <h1 class="mb-2 text-2xl font-bold tracking-tight">
-          Syarat dan Ketentuan
+  <div class="site-container page-section">
+    <article class="mx-auto max-w-2xl">
+      <header class="mb-8">
+        <h1 class="text-foreground text-2xl font-semibold">
+          Syarat dan ketentuan
         </h1>
-        <p class="text-muted-foreground">Terakhir diperbarui: 1 Maret 2025</p>
+        <p class="text-muted-foreground mt-2 text-xs">
+          Terakhir diperbarui: 22 Agustus 2026
+        </p>
+      </header>
+
+      <div
+        class="border-border text-muted-foreground space-y-8 border-t pt-6 text-sm leading-relaxed"
+      >
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            1. Ruang lingkup layanan
+          </h2>
+          <p>
+            kamusbahasamoy menyediakan kamus, terjemahan sederhana, informasi
+            kata, pengucapan melalui kemampuan browser, dan koleksi lirik untuk
+            tujuan pembelajaran serta dokumentasi Bahasa Moy.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            2. Ketepatan informasi
+          </h2>
+          <p>
+            Kami berupaya menjaga data tetap bermanfaat dan akurat, tetapi tidak
+            menjamin setiap ejaan, arti, contoh, pengucapan, atau terjemahan
+            selalu lengkap dan sesuai untuk semua konteks. Hasil penerjemah
+            sebaiknya diperiksa kembali dengan penutur atau sumber yang relevan.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            3. Penggunaan yang diperbolehkan
+          </h2>
+          <p>
+            Anda dapat menggunakan situs untuk belajar, penelitian, rujukan, dan
+            kegiatan lain yang sah. Anda tidak boleh mengganggu layanan, mencoba
+            mengakses sistem tanpa izin, mengirim muatan berbahaya, atau
+            menggunakan otomatisasi yang membebani API secara tidak wajar.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            4. Kode sumber dan konten
+          </h2>
+          <p>
+            Kode sumber proyek tersedia dengan lisensi AGPL-3.0 dan dapat
+            digunakan sesuai ketentuan lisensi tersebut. Data kamus, lirik,
+            merek, serta materi dari sumber lain dapat memiliki atribusi dan hak
+            penggunaan yang berbeda. Lisensi kode tidak otomatis mengalihkan hak
+            atas seluruh konten.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            5. Ketersediaan layanan
+          </h2>
+          <p>
+            Situs dan API disediakan sebagaimana tersedia. Fitur dapat berubah,
+            dibatasi, atau tidak tersedia sementara karena pemeliharaan,
+            gangguan jaringan, perubahan sumber data, atau alasan keamanan.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            6. Tautan pihak ketiga
+          </h2>
+          <p>
+            Tautan ke GitHub, Google Play, atau layanan lain disediakan untuk
+            kemudahan. Layanan tersebut dikelola pihak ketiga dan tunduk pada
+            ketentuan mereka masing-masing.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            7. Batasan tanggung jawab
+          </h2>
+          <p>
+            Sejauh diizinkan oleh hukum, pengelola tidak bertanggung jawab atas
+            kerugian yang timbul dari ketergantungan pada hasil terjemahan,
+            ketidakakuratan konten, atau ketidaktersediaan layanan. Ketentuan
+            ini tidak membatasi hak yang tidak dapat dikesampingkan menurut
+            hukum.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            8. Perubahan ketentuan
+          </h2>
+          <p>
+            Ketentuan dapat diperbarui untuk menyesuaikan fitur, pengelolaan
+            data, atau aturan yang berlaku. Penggunaan situs setelah pembaruan
+            berarti Anda menggunakan layanan berdasarkan versi ketentuan yang
+            sedang berlaku.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            9. Hukum yang berlaku
+          </h2>
+          <p>
+            Ketentuan ini ditafsirkan sesuai hukum Republik Indonesia, dengan
+            tetap menghormati hak pengguna yang berlaku.
+          </p>
+        </section>
       </div>
-
-      <Card className="shadow-none">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="text-primary h-5 w-5" />
-            Syarat dan Ketentuan Penggunaan
-          </CardTitle>
-          <CardDescription
-            >Ketentuan yang mengatur penggunaan aplikasi Kamus Bahasa Moy</CardDescription
-          >
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <h3 class="mb-2 font-medium">1. Pendahuluan</h3>
-            <p class="text-muted-foreground text-sm">
-              Selamat datang di Kamus Bahasa Moy. Syarat dan Ketentuan ini
-              mengatur penggunaan Anda atas aplikasi Kamus Bahasa Moy yang
-              dikelola oleh Papua Open Source ("kami", "kita", atau "milik
-              kami").
-            </p>
-            <p class="text-muted-foreground mt-2 text-sm">
-              Dengan mengakses atau menggunakan Aplikasi, Anda menyetujui bahwa
-              Anda telah membaca, memahami, dan menyetujui untuk terikat oleh
-              Syarat dan Ketentuan ini. Jika Anda tidak menyetujui semua
-              ketentuan ini, maka Anda tidak boleh mengakses atau menggunakan
-              Aplikasi.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">2. Penggunaan Aplikasi</h3>
-            <p class="text-muted-foreground mb-2 text-sm">
-              Kamus Bahasa Moy adalah aplikasi yang dirancang untuk membantu
-              pengguna mempelajari dan memahami bahasa Moy dari Jayapura, Papua.
-              Aplikasi ini menyediakan kosakata, terjemahan, pengucapan, dan
-              contoh penggunaan dalam kalimat, serta lirik lagu dalam bahasa
-              Moy.
-            </p>
-            <p class="text-muted-foreground text-sm">
-              Anda setuju untuk menggunakan Aplikasi hanya untuk tujuan yang sah
-              dan sesuai dengan Syarat dan Ketentuan ini, serta semua hukum dan
-              peraturan yang berlaku.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">3. Hak Kekayaan Intelektual</h3>
-            <p class="text-muted-foreground mb-2 text-sm">
-              Aplikasi dan kontennya, termasuk namun tidak terbatas pada teks,
-              grafik, logo, ikon, gambar, klip audio, unduhan digital, dan
-              kompilasi data, adalah milik Papua Open Source atau pemberi
-              lisensinya dan dilindungi oleh hukum hak cipta Indonesia dan
-              internasional.
-            </p>
-            <p class="text-muted-foreground text-sm">
-              Kode sumber Aplikasi dilisensikan di bawah lisensi AGPL-3.0. Anda
-              dapat menggunakan, memodifikasi, dan mendistribusikan kode sumber
-              sesuai dengan ketentuan lisensi tersebut, termasuk menjaga kode
-              sumber tetap terbuka dan mencantumkan atribusi kepada Papua Open
-              Source sebagai pengembang awal.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">4. Batasan Penggunaan</h3>
-            <p class="text-muted-foreground mb-2 text-sm">
-              Anda setuju untuk tidak:
-            </p>
-            <ul class="text-muted-foreground list-disc space-y-1 pl-6 text-sm">
-              <li>
-                Menggunakan Aplikasi dengan cara yang melanggar hukum atau
-                peraturan yang berlaku
-              </li>
-              <li>
-                Menggunakan Aplikasi untuk tujuan komersial tanpa izin tertulis
-                dari kami
-              </li>
-              <li>
-                Mencoba untuk mendekompilasi atau merekayasa balik Aplikasi,
-                kecuali sebagaimana diizinkan oleh hukum
-              </li>
-              <li>
-                Menghapus atau mengubah pemberitahuan hak cipta, merek dagang,
-                atau hak kepemilikan lainnya dari Aplikasi
-              </li>
-              <li>
-                Menggunakan Aplikasi dengan cara yang dapat merusak,
-                menonaktifkan, membebani, atau mengganggu server atau jaringan
-                kami
-              </li>
-              <li>
-                Mengakses Aplikasi dengan cara yang tidak sah, termasuk namun
-                tidak terbatas pada penggunaan robot, spider, atau cara otomatis
-                lainnya
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">5. Penafian Jaminan</h3>
-            <p class="text-muted-foreground text-sm">
-              Aplikasi disediakan "sebagaimana adanya" dan "sebagaimana
-              tersedia" tanpa jaminan apa pun, baik tersurat maupun tersirat.
-              Papua Open Source tidak menjamin bahwa Aplikasi akan selalu aman,
-              bebas dari kesalahan, atau bahwa kesalahan apa pun akan
-              diperbaiki. Anda menggunakan Aplikasi atas risiko Anda sendiri.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">6. Batasan Tanggung Jawab</h3>
-            <p class="text-muted-foreground text-sm">
-              Dalam keadaan apa pun, Papua Open Source tidak bertanggung jawab
-              atas kerugian langsung, tidak langsung, insidental, khusus, atau
-              konsekuensial yang timbul dari penggunaan atau ketidakmampuan
-              untuk menggunakan Aplikasi.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">7. Perubahan Syarat dan Ketentuan</h3>
-            <p class="text-muted-foreground text-sm">
-              Kami berhak, atas kebijakan kami sendiri, untuk memodifikasi atau
-              mengganti Syarat dan Ketentuan ini kapan saja. Jika revisi
-              bersifat material, kami akan memberikan pemberitahuan setidaknya
-              30 hari sebelum ketentuan baru berlaku. Apa yang merupakan
-              perubahan material akan ditentukan atas kebijakan kami sendiri.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">8. Hukum yang Berlaku</h3>
-            <p class="text-muted-foreground text-sm">
-              Syarat dan Ketentuan ini akan diatur dan ditafsirkan sesuai dengan
-              hukum Indonesia, tanpa memperhatikan ketentuan konflik hukumnya.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">9. Hubungi Kami</h3>
-            <p class="text-muted-foreground text-sm">
-              Jika Anda memiliki pertanyaan tentang Syarat dan Ketentuan ini,
-              silakan hubungi kami:
-            </p>
-            <ul
-              class="text-muted-foreground mt-2 list-disc space-y-1 pl-6 text-sm"
-            >
-              <li>
-                Melalui email:{' '}
-                <a
-                  href="mailto:contact@papuaopensource.org"
-                  class="text-primary hover:underline"
-                >
-                  contact@papuaopensource.org
-                </a>
-              </li>
-              <li>
-                Melalui website:{' '}
-                <a
-                  href="https://www.papuaopensource.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-primary hover:underline"
-                >
-                  www.papuaopensource.org
-                </a>
-              </li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    </article>
   </div>
 </MainLayout>

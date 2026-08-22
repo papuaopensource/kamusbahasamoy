@@ -1,13 +1,372 @@
 ---
-import MainLayout from '@/layouts/MainLayout.astro';
-import Home from '@/components/Home';
+import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
 <MainLayout
-  title="Pelajari Kosa Kata Bahasa Moy"
-  description="Kamus Bahasa Moy adalah proyek yang dikembangkan untuk membantu melestarikan dan mempromosikan bahasa Moy dari Jayapura, Papua."
+  title="Beranda"
+  description="Terjemahkan kata antara Bahasa Indonesia dan Bahasa Moy."
 >
-  <main class="mx-auto px-4 md:px-8">
-    <Home client:load />
-  </main>
+  <div class="site-container" x-data="translator">
+    <section class="mx-auto max-w-7xl py-16">
+      <header class="mb-10">
+        <h1 class="mb-3 text-2xl font-semibold text-neutral-100">
+          Terjemahkan kata
+        </h1>
+        <p class="text-sm leading-relaxed text-neutral-400">
+          Masukkan kata dalam Bahasa Indonesia atau Bahasa Moy untuk melihat
+          terjemahannya. Gunakan satu kata untuk hasil terbaik.
+        </p>
+      </header>
+
+      <p
+        x-show="error"
+        x-cloak
+        x-text="error"
+        class="mb-6 rounded border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300"
+      >
+      </p>
+
+      <div class="space-y-6">
+        <div
+          class="flex items-center justify-between rounded border border-white/10 bg-neutral-800/50 p-1"
+        >
+          <p
+            class="flex-1 px-3 py-2 text-sm font-medium text-neutral-200"
+            x-text="reversed ? 'Moy' : 'Indonesia'"
+          >
+          </p>
+          <button
+            type="button"
+            aria-label="Tukar arah terjemahan"
+            @click="swapLanguages()"
+            class="focus-visible:outline-ring mx-2 inline-flex size-9 items-center justify-center rounded border border-white/10 bg-neutral-700 text-neutral-300 hover:border-white/20 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="size-4"
+            >
+              <path d="m7 16-4-4 4-4"></path>
+              <path d="M3 12h18"></path>
+              <path d="m17 8 4 4-4 4"></path>
+            </svg>
+          </button>
+          <p
+            class="flex-1 px-3 py-2 text-left text-sm font-medium text-neutral-200"
+            x-text="reversed ? 'Indonesia' : 'Moy'"
+          >
+          </p>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-2">
+          <div class="relative" @click.outside="showSuggestions = false">
+            <label for="translation-input" class="sr-only">
+              Kata yang ingin diterjemahkan
+            </label>
+            <textarea
+              id="translation-input"
+              x-model="inputText"
+              @input.debounce.350ms="translate(); updateSuggestions()"
+              @focus="updateSuggestions()"
+              :placeholder="loading ? 'Memuat kamus...' : reversed ? 'Masukkan kata Bahasa Moy...' : 'Masukkan kata Bahasa Indonesia...'"
+              :disabled="loading"
+              maxlength="5000"
+              class="focus-visible:ring-ring min-h-56 w-full resize-none rounded border border-white/10 bg-neutral-800/50 p-4 text-sm leading-relaxed text-neutral-100 outline-none placeholder:text-neutral-500 focus-visible:border-white/20 focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-60"
+            ></textarea>
+
+            <div
+              x-show="showSuggestions && suggestions.length > 0"
+              x-cloak
+              class="absolute right-0 left-0 z-10 mt-2 overflow-hidden rounded border border-white/10 bg-neutral-800 p-1"
+            >
+              <template
+                x-for="suggestion in suggestions"
+                :key="suggestion.label"
+              >
+                <button
+                  type="button"
+                  @click="applySuggestion(suggestion)"
+                  class="focus-visible:outline-ring block w-full rounded px-4 py-3 text-left transition-colors hover:bg-neutral-700 focus-visible:outline-2"
+                >
+                  <span
+                    class="block text-sm font-medium text-neutral-200"
+                    x-text="suggestion.label"></span>
+                  <span
+                    class="mt-1 flex flex-wrap items-center gap-2 text-xs text-neutral-500"
+                  >
+                    <span x-text="suggestion.translation"></span>
+                    <span aria-hidden="true">·</span>
+                    <span x-text="suggestion.category"></span>
+                  </span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div
+            class="relative min-h-56 rounded border border-white/10 bg-neutral-800/50 p-4 pb-12"
+          >
+            <p
+              x-show="!translatedText"
+              class="max-w-sm text-sm leading-relaxed text-neutral-500"
+            >
+              Terjemahan
+            </p>
+            <div x-show="translatedText" x-cloak>
+              <p
+                x-text="translatedText"
+                class="text-lg leading-relaxed font-medium text-neutral-100"
+              >
+              </p>
+              <p
+                x-show="translationHint"
+                x-text="translationHint"
+                class="mt-2 text-xs leading-relaxed text-neutral-500"
+              >
+              </p>
+              <div x-show="currentWord" class="mt-4 flex items-center gap-2">
+                <span
+                  x-text="currentWord?.word_class?.name || '-'"
+                  class="rounded border border-white/10 bg-neutral-700/50 px-2 py-1 text-xs font-medium text-neutral-400"
+                ></span>
+                <button
+                  type="button"
+                  @click="openDetail()"
+                  class="focus-visible:outline-ring rounded px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-700 hover:text-neutral-100 focus-visible:outline-2"
+                >
+                  detail
+                </button>
+              </div>
+            </div>
+
+            <div
+              x-show="translatedText"
+              x-cloak
+              class="absolute right-2 bottom-2 flex items-center gap-1"
+            >
+              <button
+                type="button"
+                aria-label="Dengarkan terjemahan"
+                @click="speakText(translatedText)"
+                class="focus-visible:outline-ring inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-700 hover:text-neutral-100 focus-visible:outline-2"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  class="size-4"
+                >
+                  <path d="M11 5 6 9H2v6h4l5 4z"></path>
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Salin terjemahan"
+                @click="copyTranslation()"
+                class="focus-visible:outline-ring inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-700 hover:text-neutral-100 focus-visible:outline-2"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  class="size-4"
+                >
+                  <rect width="14" height="14" x="8" y="8" rx="2"></rect>
+                  <path
+                    d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section
+          x-show="relatedWords.length > 0"
+          x-cloak
+          class="border-t border-white/10 pt-6"
+        >
+          <h2 class="text-sm font-medium text-neutral-300">
+            Rekomendasi kata terkait
+          </h2>
+          <p class="mt-1 mb-3 text-xs leading-relaxed text-neutral-500">
+            Rekomendasi berasal dari relasi pada entri kamus. Pilih salah satu
+            untuk langsung menerjemahkannya.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <template x-for="word in relatedWords" :key="word">
+              <button
+                type="button"
+                @click="selectRelated(word)"
+                class="focus-visible:outline-ring rounded border border-white/10 bg-neutral-800/50 px-3 py-2 text-left transition-colors hover:border-white/20 focus-visible:outline-2"
+              >
+                <span
+                  class="block text-sm font-medium text-neutral-300"
+                  x-text="word"></span>
+                <span
+                  x-show="relatedTarget(word)"
+                  class="mt-0.5 block text-xs text-neutral-500"
+                  x-text="relatedTarget(word)"></span>
+              </button>
+            </template>
+            <a
+              href="/kosa-kata/"
+              class="rounded border border-white/10 px-3 py-2 text-sm text-neutral-400 transition-colors hover:border-white/20 hover:text-neutral-100"
+            >
+              lihat semua kata
+            </a>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <dialog
+      x-ref="wordDialog"
+      x-effect="dialogOpen && !$refs.wordDialog.open ? $refs.wordDialog.showModal() : !dialogOpen && $refs.wordDialog.open ? $refs.wordDialog.close() : null"
+      @cancel.prevent="closeDialog()"
+      @click.self="closeDialog()"
+      class="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded border border-white/10 bg-neutral-800 p-6 text-left text-neutral-100 backdrop:bg-black/70"
+    >
+      <button
+        type="button"
+        aria-label="Tutup detail kata"
+        @click="closeDialog()"
+        class="focus-visible:outline-ring absolute top-4 right-4 inline-flex size-9 items-center justify-center rounded text-neutral-500 hover:bg-neutral-700 hover:text-neutral-100 focus-visible:outline-2"
+      >
+        <span aria-hidden="true" class="text-xl leading-none">×</span>
+      </button>
+
+      <header class="pr-10">
+        <div class="flex items-center gap-2">
+          <h2
+            class="text-xl font-semibold text-neutral-100"
+            x-text="currentWord?.text || 'Detail kata'"
+          >
+          </h2>
+          <button
+            x-show="currentWord?.text"
+            type="button"
+            aria-label="Dengarkan kata"
+            @click="speakText(currentWord.text)"
+            class="text-neutral-500 hover:text-neutral-100"
+          >
+            dengarkan
+          </button>
+        </div>
+        <p
+          class="mt-1 text-sm text-neutral-400"
+          x-text="currentWord ? meanings(currentWord) : ''"
+        >
+        </p>
+      </header>
+
+      <div class="mt-6 space-y-5 text-sm leading-relaxed">
+        <p x-show="loadingDetail" class="text-neutral-500">Memuat detail...</p>
+        <p x-show="detailError" x-text="detailError" class="text-red-300"></p>
+        <template x-if="currentWord && !loadingDetail && !detailError">
+          <div class="space-y-5">
+            <p
+              class="rounded border border-white/10 bg-neutral-700/50 p-3 text-xs leading-relaxed text-neutral-500"
+            >
+              Detail berikut berasal dari entri kamus yang tersedia. Bagian yang
+              belum didokumentasikan akan ditandai secara jelas.
+            </p>
+            <dl class="grid gap-3 sm:grid-cols-2">
+              <div class="rounded border border-white/10 p-3">
+                <dt class="text-xs text-neutral-500">Kelas kata</dt>
+                <dd
+                  class="mt-1 text-sm font-medium text-neutral-300"
+                  x-text="currentWord.word_class?.name || 'Belum tersedia'"
+                >
+                </dd>
+              </div>
+              <div class="rounded border border-white/10 p-3">
+                <dt class="text-xs text-neutral-500">Pengucapan</dt>
+                <dd
+                  class="mt-1 text-sm font-medium text-neutral-300"
+                  x-text="currentWord.pronunciation || 'Belum tersedia'"
+                >
+                </dd>
+              </div>
+            </dl>
+            <div>
+              <h3 class="mb-2 text-sm font-medium text-neutral-300">
+                Definisi
+              </h3>
+              <p
+                class="text-neutral-400"
+                x-text="currentWord.definition || 'Tidak ada definisi'"
+              >
+              </p>
+            </div>
+            <div>
+              <h3 class="mb-2 text-sm font-medium text-neutral-300">
+                Contoh kalimat
+              </h3>
+              <p class="mb-1 text-xs text-neutral-500">Bahasa Moy</p>
+              <p
+                class="text-neutral-300"
+                x-text="currentWord.example_original || 'Tidak ada contoh kalimat'"
+              >
+              </p>
+              <p
+                x-show="currentWord.example_translation"
+                class="mt-3 mb-1 text-xs text-neutral-500"
+              >
+                Terjemahan Indonesia
+              </p>
+              <p
+                x-show="currentWord.example_translation"
+                class="text-neutral-400"
+                x-text="currentWord.example_translation"
+              >
+              </p>
+            </div>
+            <div
+              x-show="currentWord.related_words?.length > 0"
+              class="border-t border-white/10 pt-5"
+            >
+              <h3 class="mb-1 text-sm font-medium text-neutral-300">
+                Kata terkait
+              </h3>
+              <p class="mb-3 text-xs leading-relaxed text-neutral-500">
+                Pilih kata untuk menutup dialog dan menjadikannya input baru.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <template
+                  x-for="related in currentWord.related_words || []"
+                  :key="related.id"
+                >
+                  <button
+                    type="button"
+                    @click="selectRelated(reversed ? related.text : (related.meanings?.[0]?.name || related.text)); closeDialog()"
+                    class="rounded border border-white/10 px-3 py-2 text-xs text-neutral-400 hover:border-white/20 hover:text-neutral-100"
+                    x-text="reversed ? related.text : (related.meanings?.[0]?.name || related.text)"
+                  ></button>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </dialog>
+
+    <div
+      x-show="notice"
+      x-cloak
+      x-transition.opacity
+      x-text="notice"
+      aria-live="polite"
+      class="fixed right-4 bottom-4 z-50 max-w-sm rounded border border-white/10 bg-neutral-700 px-4 py-3 text-sm font-medium text-neutral-100"
+    >
+    </div>
+  </div>
 </MainLayout>

@@ -1,13 +1,258 @@
 ---
-import Layout from '@/layouts/MainLayout.astro';
-
-import LirikLaguPage from '@/components/LirikLagu';
+import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
-<Layout
+<MainLayout
   title="Kumpulan Lirik Lagu"
-  description="Kumpulan lirik lagu berbahasa Moy dengan terjemahan dalam bahasa Indonesia"
-  image="/images/preview_lirik_lagu.png"
+  description="Kumpulan lirik lagu berbahasa Moy dengan terjemahan dalam bahasa Indonesia."
 >
-  <LirikLaguPage client:load />
-</Layout>
+  <div class="site-container page-section" x-data="songs">
+    <div class="grid gap-8">
+      <header
+        class="flex flex-col items-start justify-between gap-6 border-b border-white/10 pb-8 md:flex-row md:items-end"
+      >
+        <div>
+          <h1 class="text-2xl font-semibold text-neutral-100">
+            Lirik lagu Bahasa Moy
+          </h1>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-neutral-400">
+            Jelajahi kumpulan lirik lagu daerah dalam bahasa Moy.
+          </p>
+        </div>
+        <label class="relative block w-full md:w-80">
+          <span class="sr-only">Cari lagu</span>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            type="search"
+            placeholder="Cari lagu..."
+            x-model.debounce.250ms="searchQuery"
+            class="focus-visible:ring-ring h-10 w-full rounded border border-white/10 bg-neutral-800 pr-4 pl-10 text-sm text-neutral-100 outline-none placeholder:text-neutral-500 focus-visible:border-white/20 focus-visible:ring-1"
+          />
+        </label>
+      </header>
+
+      <div
+        class="flex flex-col items-start justify-between gap-4 rounded border border-white/10 bg-neutral-800/40 p-4 sm:flex-row sm:items-center"
+      >
+        <p class="text-xs text-neutral-500">
+          <span
+            x-text="loading ? 'Memuat...' : `${filteredSongs.length} dari ${songs.length} lagu`"
+          ></span>
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <label>
+            <span class="sr-only">Filter penulis</span>
+            <select
+              x-model="selectedComposer"
+              class="focus-visible:ring-ring h-10 rounded border border-white/10 bg-neutral-800 px-3 text-sm text-neutral-300 outline-none hover:border-white/20 focus-visible:ring-1"
+            >
+              <option value="">Semua penulis</option>
+              <template x-for="composer in composers" :key="composer">
+                <option :value="composer" x-text="composer"></option>
+              </template>
+              <option value="unknown">Penulis belum diketahui</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="sr-only">Urutkan lagu</span>
+            <select
+              x-model="sortOrder"
+              class="focus-visible:ring-ring h-10 rounded border border-white/10 bg-neutral-800 px-3 text-sm text-neutral-300 outline-none hover:border-white/20 focus-visible:ring-1"
+            >
+              <option value="title-asc">Judul (A-Z)</option>
+              <option value="title-desc">Judul (Z-A)</option>
+              <option value="composer-asc">Penulis (A-Z)</option>
+              <option value="composer-desc">Penulis (Z-A)</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <p x-show="loading" class="py-12 text-center text-sm text-neutral-500">
+        Memuat data lagu...
+      </p>
+      <p
+        x-show="error"
+        x-cloak
+        x-text="error"
+        class="py-12 text-center text-sm text-red-300"
+      >
+      </p>
+
+      <div
+        x-show="!loading && !error && filteredSongs.length > 0"
+        x-cloak
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <template x-for="song in filteredSongs" :key="song.id">
+          <article
+            class="flex flex-col rounded border border-white/10 bg-neutral-800/40 p-5 transition-colors hover:border-white/20"
+          >
+            <div
+              class="mb-4 flex size-10 items-center justify-center rounded border border-white/10 bg-neutral-700/50 text-neutral-400"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="size-4"
+              >
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+            <h2
+              class="text-base font-medium text-neutral-200"
+              x-text="song.title"
+            >
+            </h2>
+            <p
+              class="mt-1 text-xs text-neutral-500"
+              x-text="song.composer || 'Penulis belum diketahui'"
+            >
+            </p>
+            <p
+              class="mt-4 line-clamp-2 grow text-sm leading-relaxed text-neutral-400"
+              x-text="song.description || 'Belum ada deskripsi untuk lagu ini.'"
+            >
+            </p>
+            <button
+              type="button"
+              @click="openDetail(song)"
+              class="focus-visible:outline-ring mt-5 inline-flex h-10 w-full items-center justify-center rounded border border-white/10 px-4 text-sm font-medium text-neutral-300 transition-colors hover:border-white/20 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              lihat lirik
+            </button>
+          </article>
+        </template>
+      </div>
+
+      <div
+        x-show="!loading && !error && filteredSongs.length === 0"
+        x-cloak
+        class="py-12 text-center"
+      >
+        <h2 class="text-sm font-medium text-neutral-300">
+          Tidak ada lagu yang ditemukan
+        </h2>
+        <p class="mt-1 text-xs text-neutral-500">
+          Coba ubah kata kunci atau filter penulis.
+        </p>
+      </div>
+    </div>
+
+    <dialog
+      x-ref="songDialog"
+      x-effect="dialogOpen && !$refs.songDialog.open ? $refs.songDialog.showModal() : !dialogOpen && $refs.songDialog.open ? $refs.songDialog.close() : null"
+      @cancel.prevent="closeDialog()"
+      @click.self="closeDialog()"
+      class="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xl overflow-y-auto rounded border border-white/10 bg-neutral-800 p-6 text-left text-neutral-100 backdrop:bg-black/70"
+    >
+      <button
+        type="button"
+        aria-label="Tutup lirik"
+        @click="closeDialog()"
+        class="focus-visible:outline-ring absolute top-4 right-4 inline-flex size-9 items-center justify-center rounded text-neutral-500 hover:bg-neutral-700 hover:text-neutral-100 focus-visible:outline-2"
+      >
+        <span aria-hidden="true" class="text-xl leading-none">×</span>
+      </button>
+      <header class="pr-10">
+        <h2
+          class="text-xl font-semibold text-neutral-100"
+          x-text="selectedSong?.title || 'Detail lagu'"
+        >
+        </h2>
+        <p
+          class="mt-1 text-sm text-neutral-400"
+          x-text="selectedSong?.composer || 'Penulis belum diketahui'"
+        >
+        </p>
+        <p
+          x-show="selectedSong?.description"
+          x-text="selectedSong?.description"
+          class="mt-3 text-sm leading-relaxed text-neutral-500"
+        >
+        </p>
+      </header>
+
+      <div class="mt-6 text-sm leading-relaxed">
+        <p x-show="loadingDetail" class="text-neutral-500">Memuat lirik...</p>
+        <p x-show="detailError" x-text="detailError" class="text-red-300"></p>
+        <div
+          x-show="songDetail && !loadingDetail"
+          x-cloak
+          class="space-y-5 border-t border-white/10 pt-5"
+        >
+          <dl class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded border border-white/10 p-3">
+              <dt class="text-xs text-neutral-500">Penulis</dt>
+              <dd
+                class="mt-1 text-sm font-medium text-neutral-300"
+                x-text="songDetail?.composer || 'Belum diketahui'"
+              >
+              </dd>
+            </div>
+            <div class="rounded border border-white/10 p-3">
+              <dt class="text-xs text-neutral-500">Bagian lirik</dt>
+              <dd
+                class="mt-1 text-sm font-medium text-neutral-300"
+                x-text="`${songDetail?.verses?.length || 0} bagian`"
+              >
+              </dd>
+            </div>
+          </dl>
+
+          <section>
+            <h3 class="mb-1 text-sm font-medium text-neutral-300">Lirik</h3>
+            <p class="mb-4 text-xs leading-relaxed text-neutral-500">
+              Pembagian bait mengikuti data lagu yang tersedia di koleksi.
+            </p>
+            <p
+              x-show="!songDetail?.verses?.length"
+              class="rounded border border-white/10 bg-neutral-700/50 p-3 text-sm text-neutral-500"
+            >
+              Lirik belum tersedia untuk lagu ini.
+            </p>
+            <div class="max-h-96 space-y-5 overflow-y-auto pr-2">
+              <template
+                x-for="(verse, verseIndex) in songDetail?.verses || []"
+                :key="`${verse.type}-${verse.order}-${verseIndex}`"
+              >
+                <section>
+                  <h4
+                    class="mb-2 text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                    x-text="verseLabel(verse, verseIndex)"
+                  >
+                  </h4>
+                  <div class="space-y-1">
+                    <template
+                      x-for="(line, lineIndex) in verse.content"
+                      :key="lineIndex"
+                    >
+                      <p class="text-neutral-300" x-text="line"></p>
+                    </template>
+                  </div>
+                </section>
+              </template>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+  </div>
+</MainLayout>

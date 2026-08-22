@@ -1,156 +1,118 @@
 ---
-import Link from '@/components/Link.astro';
-import { Home, Shield } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import MainLayout from '@/layouts/MainLayout.astro';
+import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
 <MainLayout
   title="Kebijakan Privasi"
-  description="Kebijakan privasi aplikasi Kamus Bahasa Moy."
+  description="Informasi tentang pemrosesan data dan privasi di Kamus Bahasa Moy."
 >
-  <div class="mx-auto flex max-w-screen-xl flex-col px-4 py-6 md:px-8">
-    <div class="mb-6 flex items-center gap-2">
-      <Home className="text-muted-foreground h-4 w-4" />
-      <Link
-        href="/"
-        class="text-muted-foreground hover:text-foreground text-sm"
-      >
-        Beranda
-      </Link>
-      <span class="text-muted-foreground mx-1">/</span>
-      <span class="text-sm font-medium">Kebijakan Privasi</span>
-    </div>
-
-    <div class="mx-auto grid max-w-3xl gap-8">
-      <div class="text-center">
-        <h1 class="mb-2 text-2xl font-bold tracking-tight">
-          Kebijakan Privasi
+  <div class="site-container page-section">
+    <article class="mx-auto max-w-2xl">
+      <header class="mb-8">
+        <h1 class="text-foreground text-2xl font-semibold">
+          Kebijakan privasi
         </h1>
-        <p class="text-muted-foreground">Terakhir diperbarui: 1 Maret 2025</p>
+        <p class="text-muted-foreground mt-2 text-xs">
+          Terakhir diperbarui: 22 Agustus 2026
+        </p>
+      </header>
+
+      <div
+        class="border-border text-muted-foreground space-y-8 border-t pt-6 text-sm leading-relaxed"
+      >
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">Ringkasan</h2>
+          <p>
+            kamusbahasamoy tidak menyediakan akun pengguna, pembayaran, atau
+            profil personal. Kami berusaha membatasi pemrosesan data pada hal
+            yang diperlukan untuk menjalankan situs, menjaga keamanan layanan,
+            dan memahami penggunaan situs secara agregat.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Penggunaan kamus dan pencarian
+          </h2>
+          <p>
+            Browser mengambil data kosa kata dan lagu dari API situs. Kata yang
+            Anda ketik untuk mencari atau menerjemahkan dicocokkan di browser
+            dan tidak sengaja disimpan sebagai riwayat pencarian oleh fitur
+            kamus. Infrastruktur server tetap dapat menghasilkan log teknis
+            rutin untuk keamanan dan pemeliharaan layanan.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Analitik kunjungan
+          </h2>
+          <p>
+            Situs menggunakan Umami untuk melihat statistik kunjungan secara
+            agregat, seperti halaman yang dibuka, sumber rujukan, serta jenis
+            browser atau perangkat. Data ini digunakan untuk memperbaiki situs,
+            bukan untuk iklan tertarget atau membuat profil pengguna.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Pesan yang dikirim melalui email
+          </h2>
+          <p>
+            Jika Anda menghubungi pengelola, informasi yang Anda tulis akan
+            diproses untuk membaca dan menindaklanjuti pesan. Hindari mengirim
+            data sensitif yang tidak diperlukan. Penyedia layanan email dapat
+            menerapkan kebijakan privasinya sendiri.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Cookies dan penyimpanan browser
+          </h2>
+          <p>
+            Situs tidak menggunakan cookie untuk akun, personalisasi iklan, atau
+            pelacakan lintas situs. Fitur browser atau layanan pihak ketiga yang
+            Anda buka melalui tautan eksternal dapat memiliki kebijakan
+            penyimpanan yang berbeda.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Tautan dan layanan pihak ketiga
+          </h2>
+          <p>
+            Situs dapat menautkan ke GitHub, Google Play, dan layanan lain yang
+            dikelola pihak ketiga. Pengelola kamusbahasamoy tidak mengendalikan
+            isi atau praktik privasi layanan tersebut.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Keamanan dan penyimpanan data
+          </h2>
+          <p>
+            Kami menggunakan langkah teknis yang wajar untuk menjaga layanan.
+            Log operasional dan korespondensi disimpan hanya selama masih
+            diperlukan untuk keamanan, pemeliharaan, atau tindak lanjut yang
+            relevan.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-foreground mb-2 text-sm font-medium">
+            Perubahan kebijakan
+          </h2>
+          <p>
+            Kebijakan ini dapat diperbarui ketika fitur, penyedia layanan, atau
+            cara pemrosesan data berubah. Tanggal pembaruan terbaru akan selalu
+            ditampilkan pada bagian atas halaman ini.
+          </p>
+        </section>
       </div>
-
-      <Card className="shadow-none">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="text-primary h-5 w-5" />
-            Kebijakan Privasi Kamus Bahasa Moy
-          </CardTitle>
-          <CardDescription
-            >Informasi tentang bagaimana kami menangani data Anda</CardDescription
-          >
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <h3 class="mb-2 font-medium">Pendahuluan</h3>
-            <p class="text-muted-foreground text-sm">
-              Papua Open Source ("kami", "kita", atau "milik kami") mengelola
-              aplikasi Kamus Bahasa Moy ("Aplikasi"). Halaman ini memberi tahu
-              Anda tentang kebijakan privasi kami dan bagaimana kami menghormati
-              privasi Anda saat menggunakan Aplikasi kami.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Tidak Ada Pengumpulan Data</h3>
-            <p class="text-muted-foreground mb-2 text-sm">
-              Kami ingin menegaskan bahwa Kamus Bahasa Moy{' '}
-              <strong>tidak mengumpulkan data pribadi pengguna apa pun</strong>.
-              Aplikasi ini dirancang untuk berfungsi tanpa perlu mengumpulkan,
-              menyimpan, atau memproses informasi pribadi Anda.
-            </p>
-            <p class="text-muted-foreground text-sm">
-              Kami berkomitmen untuk menjaga privasi Anda dan menyediakan
-              aplikasi yang dapat Anda gunakan dengan aman tanpa khawatir
-              tentang data pribadi Anda.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Penggunaan Aplikasi</h3>
-            <p class="text-muted-foreground text-sm">
-              Aplikasi Kamus Bahasa Moy berfungsi sepenuhnya secara lokal di
-              perangkat Anda. Semua fitur, termasuk pencarian kosakata,
-              terjemahan, dan pemutaran audio, diproses di perangkat Anda tanpa
-              mengirimkan data apa pun ke server kami atau pihak ketiga.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Cookies dan Teknologi Pelacakan</h3>
-            <p class="text-muted-foreground text-sm">
-              Aplikasi kami tidak menggunakan cookies atau teknologi pelacakan
-              lainnya untuk memantau aktivitas pengguna.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Tautan ke Situs Web Lain</h3>
-            <p class="text-muted-foreground text-sm">
-              Aplikasi kami mungkin berisi tautan ke situs web lain yang tidak
-              dioperasikan oleh kami. Jika Anda mengklik tautan pihak ketiga,
-              Anda akan diarahkan ke situs pihak ketiga tersebut. Kami sangat
-              menyarankan Anda untuk meninjau Kebijakan Privasi setiap situs
-              yang Anda kunjungi.
-            </p>
-            <p class="text-muted-foreground mt-2 text-sm">
-              Kami tidak memiliki kendali atas dan tidak bertanggung jawab atas
-              konten, kebijakan privasi, atau praktik situs atau layanan pihak
-              ketiga mana pun.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Perubahan Kebijakan Privasi Ini</h3>
-            <p class="text-muted-foreground text-sm">
-              Kami dapat memperbarui Kebijakan Privasi kami dari waktu ke waktu.
-              Kami akan memberi tahu Anda tentang perubahan apa pun dengan
-              memposting Kebijakan Privasi baru di halaman ini. Anda disarankan
-              untuk meninjau Kebijakan Privasi ini secara berkala untuk setiap
-              perubahan. Perubahan pada Kebijakan Privasi ini berlaku efektif
-              saat diposting di halaman ini.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="mb-2 font-medium">Hubungi Kami</h3>
-            <p class="text-muted-foreground text-sm">
-              Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini,
-              silakan hubungi kami:
-            </p>
-            <ul
-              class="text-muted-foreground mt-2 list-disc space-y-1 pl-6 text-sm"
-            >
-              <li>
-                Melalui email:{' '}
-                <a
-                  href="mailto:contact@papuaopensource.org"
-                  class="text-primary hover:underline"
-                >
-                  contact@papuaopensource.org
-                </a>
-              </li>
-              <li>
-                Melalui website:{' '}
-                <a
-                  href="https://www.papuaopensource.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-primary hover:underline"
-                >
-                  www.papuaopensource.org
-                </a>
-              </li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    </article>
   </div>
 </MainLayout>

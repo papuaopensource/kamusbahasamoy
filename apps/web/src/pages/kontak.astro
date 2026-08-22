@@ -1,0 +1,56 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+---
+
+<MainLayout
+  title="Kontak"
+  description="Hubungi pengelola Kamus Bahasa Moy untuk koreksi, konten, dan kolaborasi."
+>
+  <div class="site-container page-section">
+    <article class="mx-auto max-w-2xl">
+      <header>
+        <h1 class="text-foreground text-2xl font-semibold">Kontak</h1>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+          Kirimkan pertanyaan, koreksi kosa kata, usulan lirik, laporan masalah,
+          atau rencana kolaborasi melalui email.
+        </p>
+      </header>
+
+      <section class="border-border mt-10 border-t pt-6">
+        <h2 class="text-foreground text-sm font-medium">
+          Agar pesan mudah ditindaklanjuti
+        </h2>
+        <ul
+          class="text-muted-foreground mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed"
+        >
+          <li>
+            Untuk koreksi kosa kata, sertakan kata, arti saat ini, usulan
+            perbaikan, dan rujukan jika tersedia.
+          </li>
+          <li>
+            Untuk lirik, sertakan judul lagu, bagian yang perlu diperbaiki, dan
+            versi yang disarankan.
+          </li>
+          <li>
+            Untuk masalah teknis, jelaskan langkah yang dilakukan, halaman yang
+            dibuka, serta browser dan perangkat yang digunakan.
+          </li>
+        </ul>
+      </section>
+
+      <section class="border-border bg-card mt-8 rounded border p-5">
+        <h2 class="text-foreground text-sm font-medium">Email pengelola</h2>
+        <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+          Jangan menyertakan kata sandi atau informasi pribadi yang tidak
+          diperlukan. Waktu balasan bergantung pada ketersediaan pengelola.
+        </p>
+        <a
+          href="mailto:contact@papuaopensource.org"
+          class="border-border bg-primary text-primary-foreground focus-visible:outline-ring mt-4 inline-flex rounded border px-4 py-2 text-sm font-medium transition-colors hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          contact@papuaopensource.org
+        </a>
+      </section>
+    </article>
+  </div>
+</MainLayout>

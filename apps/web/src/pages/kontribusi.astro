@@ -1,0 +1,153 @@
+---
+import Link from "@/components/Link.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
+
+const repositoryUrl = "https://github.com/papuaopensource/kamusbahasamoy";
+---
+
+<MainLayout
+  title="Kontribusi"
+  description="Cara berkontribusi pada Kamus Bahasa Moy dan menggunakan kode sumbernya untuk mengembangkan kamus bahasa daerah lain."
+>
+  <div class="site-container page-section">
+    <article class="mx-auto max-w-2xl">
+      <header class="mb-10">
+        <p class="page-kicker">Proyek terbuka</p>
+        <h1 class="text-foreground text-2xl font-semibold">
+          Berkontribusi pada kamusbahasamoy
+        </h1>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+          Pengetahuan penutur, koreksi data, dokumentasi, dan kontribusi kode
+          membantu kamus ini menjadi lebih berguna sekaligus lebih dapat
+          dipercaya.
+        </p>
+      </header>
+
+      <div class="text-muted-foreground space-y-10 text-sm leading-relaxed">
+        <section class="space-y-4">
+          <h2 class="text-foreground text-base font-medium">
+            Bentuk kontribusi
+          </h2>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <article class="border-border rounded border p-4">
+              <h3 class="text-foreground text-sm font-medium">
+                Bahasa dan data
+              </h3>
+              <p class="mt-2">
+                Koreksi ejaan atau arti, tambahkan pengucapan dan contoh
+                kalimat, serta berikan konteks penggunaan yang diketahui oleh
+                penutur.
+              </p>
+            </article>
+            <article class="border-border rounded border p-4">
+              <h3 class="text-foreground text-sm font-medium">
+                Konten dan rujukan
+              </h3>
+              <p class="mt-2">
+                Usulkan kosa kata, lirik, atau sumber rujukan yang relevan.
+                Sertakan asal informasi agar tim dapat melakukan verifikasi.
+              </p>
+            </article>
+            <article class="border-border rounded border p-4">
+              <h3 class="text-foreground text-sm font-medium">
+                Kode dan dokumentasi
+              </h3>
+              <p class="mt-2">
+                Perbaiki bug, aksesibilitas, performa, dokumentasi pengembang,
+                atau pengalaman penggunaan melalui pull request.
+              </p>
+            </article>
+            <article class="border-border rounded border p-4">
+              <h3 class="text-foreground text-sm font-medium">
+                Pengujian dan laporan
+              </h3>
+              <p class="mt-2">
+                Laporkan hasil yang tidak tepat atau kendala penggunaan dengan
+                langkah reproduksi yang jelas dan perangkat yang digunakan.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="border-border border-t pt-6">
+          <h2 class="text-foreground mb-3 text-base font-medium">
+            Dasar untuk kamus bahasa daerah lain
+          </h2>
+          <p>
+            Kode sumber kamusbahasamoy dapat dipelajari, dimodifikasi, dan
+            digunakan sebagai dasar pengembangan website kamus untuk bahasa
+            daerah lain. Struktur frontend, API, pencarian, dan pengelolaan data
+            dapat diadaptasi dengan mengganti identitas proyek serta data bahasa
+            sesuai kebutuhan komunitas masing-masing.
+          </p>
+          <p class="mt-3">
+            Proyek ini menggunakan lisensi AGPL-3.0. Saat mengadaptasi kode,
+            pertahankan atribusi kepada Papua Open Source dan ikuti ketentuan
+            lisensinya, termasuk menyediakan kode sumber dari versi yang telah
+            dimodifikasi ketika digunakan sebagai layanan melalui jaringan.
+          </p>
+          <Link
+            href={`${repositoryUrl}/blob/main/LICENSE`}
+            class="text-foreground hover:text-muted-foreground mt-4 inline-flex underline underline-offset-4 transition-colors"
+          >
+            Baca lisensi AGPL-3.0
+          </Link>
+        </section>
+
+        <section class="border-border border-t pt-6">
+          <h2 class="text-foreground mb-3 text-base font-medium">
+            Alur kontribusi kode
+          </h2>
+          <ol class="list-decimal space-y-3 pl-5">
+            <li>
+              Periksa issue yang tersedia atau buat laporan baru dengan konteks
+              yang cukup.
+            </li>
+            <li>
+              Fork repository, buat branch khusus, lalu kerjakan satu perubahan
+              yang terfokus.
+            </li>
+            <li>
+              Jalankan build dan pemeriksaan proyek sebelum mengirim perubahan.
+            </li>
+            <li>
+              Buka pull request dan jelaskan masalah serta solusi yang Anda
+              ajukan.
+            </li>
+          </ol>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <Link
+              href={`${repositoryUrl}/blob/main/CONTRIBUTING.md`}
+              class="border-border bg-primary text-primary-foreground focus-visible:outline-ring inline-flex min-h-10 items-center rounded border px-4 py-2 text-sm font-medium transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Baca panduan kontribusi
+            </Link>
+            <Link
+              href={`${repositoryUrl}/issues`}
+              class="border-border text-foreground focus-visible:outline-ring hover:bg-secondary inline-flex min-h-10 items-center rounded border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Lihat issue
+            </Link>
+          </div>
+        </section>
+
+        <section class="border-border border-t pt-6">
+          <h2 class="text-foreground mb-3 text-base font-medium">
+            Kontribusi tanpa menulis kode
+          </h2>
+          <p>
+            Anda tetap dapat membantu dengan mengirim koreksi, sumber data, atau
+            usulan kolaborasi. Jangan kirim data pribadi atau materi yang tidak
+            memiliki izin untuk dibagikan.
+          </p>
+          <Link
+            href="/kontak/"
+            class="text-foreground hover:text-muted-foreground mt-4 inline-flex underline underline-offset-4 transition-colors"
+          >
+            Hubungi pengelola
+          </Link>
+        </section>
+      </div>
+    </article>
+  </div>
+</MainLayout>
