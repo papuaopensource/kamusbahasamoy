@@ -271,7 +271,7 @@ export default (Alpine: Alpine) => {
     error: "",
     searchQuery: "",
     selectedCategory: "all",
-    selectedLetter: "",
+    activeLetter: "",
     sortOrder: "asc" as "asc" | "desc",
     viewMode: "grid" as "grid" | "list",
     selectedWord: null as WordSummary | null,
@@ -284,11 +284,11 @@ export default (Alpine: Alpine) => {
       await this.loadWords();
     },
 
-    async loadWords(letter = this.selectedLetter) {
+    async loadWords() {
       this.loading = true;
       this.error = "";
       try {
-        this.words = await fetchAllWords(letter || undefined);
+        this.words = await fetchAllWords();
       } catch (reason) {
         this.error =
           reason instanceof Error ? reason.message : "Data kamus gagal dimuat.";
@@ -334,13 +334,65 @@ export default (Alpine: Alpine) => {
         );
     },
 
+    get groupedWords() {
+      const groups = new Map<string, WordSummary[]>();
+
+      for (const word of this.filteredWords) {
+        const firstCharacter = word.text.trim().charAt(0).toUpperCase();
+        const letter = /^[A-Z]$/.test(firstCharacter) ? firstCharacter : "#";
+        const group = groups.get(letter) ?? [];
+        group.push(word);
+        groups.set(letter, group);
+      }
+
+      return Array.from(groups, ([letter, words]) => ({ letter, words }));
+    },
+
+    get availableLetters() {
+      return this.groupedWords.map((group) => group.letter);
+    },
+
     meanings(word: WordSummary) {
       return meaningText(word);
     },
 
-    async setLetter(letter: string) {
-      this.selectedLetter = letter;
-      await this.loadWords(letter);
+    resetAlphabet(scroller?: HTMLElement) {
+      if (!scroller) return;
+      scroller.scrollTop = 0;
+      this.activeLetter = this.groupedWords[0]?.letter ?? "";
+    },
+
+    scrollToLetter(letter: string, scroller?: HTMLElement) {
+      if (!scroller) return;
+      const target = scroller.querySelector<HTMLElement>(
+        `[data-letter="${letter}"]`,
+      );
+      if (!target) return;
+
+      this.activeLetter = letter;
+      scroller.scrollTo({
+        top: Math.max(target.offsetTop - 8, 0),
+        behavior: "smooth",
+      });
+    },
+
+    updateActiveLetter(scroller?: HTMLElement) {
+      if (!scroller) return;
+      const groups = Array.from(
+        scroller.querySelectorAll<HTMLElement>("[data-letter]"),
+      );
+      if (groups.length === 0) {
+        this.activeLetter = "";
+        return;
+      }
+
+      const marker = scroller.scrollTop + 32;
+      let active = groups[0].dataset.letter ?? "";
+      for (const group of groups) {
+        if (group.offsetTop > marker) break;
+        active = group.dataset.letter ?? active;
+      }
+      this.activeLetter = active;
     },
 
     speakText(text: string) {

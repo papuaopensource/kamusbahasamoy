@@ -140,31 +140,6 @@ const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         </header>
 
         <div class="p-5">
-          <div class="mb-5 flex flex-wrap gap-2" aria-label="Filter huruf">
-            <button
-              type="button"
-              @click="setLetter('')"
-              :aria-pressed="selectedLetter === ''"
-              :class="selectedLetter === '' ? 'border-neutral-100 bg-neutral-100 text-neutral-900' : 'border-white/10 text-neutral-400 hover:border-white/20 hover:text-neutral-100'"
-              class="focus-visible:outline-ring inline-flex h-8 items-center justify-center rounded border px-3 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              Semua
-            </button>
-            {
-              alphabets.map((letter) => (
-                <button
-                  type="button"
-                  x-on:click={`setLetter('${letter}')`}
-                  x-bind:aria-pressed={`selectedLetter === '${letter}'`}
-                  x-bind:class={`selectedLetter === '${letter}' ? 'border-neutral-100 bg-neutral-100 text-neutral-900' : 'border-white/10 text-neutral-400 hover:border-white/20 hover:text-neutral-100'`}
-                  class="focus-visible:outline-ring inline-flex size-8 items-center justify-center rounded border text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  {letter}
-                </button>
-              ))
-            }
-          </div>
-
           <p
             x-show="loading"
             class="py-12 text-center text-sm text-neutral-500"
@@ -182,31 +157,73 @@ const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
           <div
             x-show="!loading && !error && filteredWords.length > 0"
             x-cloak
-            :class="viewMode === 'grid' ? 'grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2'"
-            class="max-h-[500px] overflow-y-auto pr-2"
+            x-effect="filteredWords.length; searchQuery; selectedCategory; sortOrder; viewMode; $nextTick(() => resetAlphabet($refs.wordScroller))"
+            class="grid grid-cols-[minmax(0,1fr)_2rem] gap-3"
           >
-            <template x-for="word in filteredWords" :key="word.id">
-              <button
-                type="button"
-                @click="openDetail(word)"
-                :class="viewMode === 'grid' ? 'block' : 'flex items-center justify-between gap-4'"
-                class="focus-visible:outline-ring w-full rounded border border-white/10 bg-neutral-800/50 p-4 text-left transition-colors hover:border-white/20 hover:bg-neutral-700/50 focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                <span class="min-w-0">
-                  <span
-                    class="block text-sm font-medium text-neutral-200"
-                    x-text="word.text"></span>
-                  <span
-                    class="mt-1 block truncate text-xs text-neutral-500"
-                    x-text="meanings(word)"></span>
-                </span>
-                <span
-                  x-text="word.word_class?.name || '-'"
-                  :class="viewMode === 'grid' ? 'mt-3 inline-flex' : 'inline-flex'"
-                  class="shrink-0 rounded border border-white/10 bg-neutral-700/50 px-2 py-1 text-xs text-neutral-400"
-                ></span>
-              </button>
-            </template>
+            <div
+              x-ref="wordScroller"
+              @scroll.passive="updateActiveLetter($event.currentTarget)"
+              class="relative max-h-[620px] overflow-y-auto scroll-smooth pr-2"
+            >
+              <template x-for="group in groupedWords" :key="group.letter">
+                <section
+                  :data-letter="group.letter"
+                  class="scroll-mt-2 pb-6 last:pb-0"
+                >
+                  <h3
+                    x-text="group.letter"
+                    class="sticky top-0 z-10 mb-3 border-b border-white/10 bg-neutral-800/95 py-2 text-sm font-semibold text-neutral-300 backdrop-blur"
+                  >
+                  </h3>
+                  <div
+                    :class="viewMode === 'grid' ? 'grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2'"
+                  >
+                    <template x-for="word in group.words" :key="word.id">
+                      <button
+                        type="button"
+                        @click="openDetail(word)"
+                        :class="viewMode === 'grid' ? 'block' : 'flex items-center justify-between gap-4'"
+                        class="focus-visible:outline-ring w-full rounded border border-white/10 bg-neutral-800/50 p-4 text-left transition-colors hover:border-white/20 hover:bg-neutral-700/50 focus-visible:outline-2 focus-visible:outline-offset-2"
+                      >
+                        <span class="min-w-0">
+                          <span
+                            class="block text-sm font-medium text-neutral-200"
+                            x-text="word.text"></span>
+                          <span
+                            class="mt-1 block truncate text-xs text-neutral-500"
+                            x-text="meanings(word)"></span>
+                        </span>
+                        <span
+                          x-text="word.word_class?.name || '-'"
+                          :class="viewMode === 'grid' ? 'mt-3 inline-flex' : 'inline-flex'"
+                          class="shrink-0 rounded border border-white/10 bg-neutral-700/50 px-2 py-1 text-xs text-neutral-400"
+                        ></span>
+                      </button>
+                    </template>
+                  </div>
+                </section>
+              </template>
+            </div>
+
+            <nav
+              aria-label="Navigasi abjad kosakata"
+              class="self-start rounded border border-white/10 bg-neutral-800/70 py-1"
+            >
+              {
+                alphabets.map((letter) => (
+                  <button
+                    type="button"
+                    x-on:click={`scrollToLetter('${letter}', $refs.wordScroller)`}
+                    x-bind:disabled={`!availableLetters.includes('${letter}')`}
+                    x-bind:aria-current={`activeLetter === '${letter}' ? 'true' : undefined`}
+                    x-bind:class={`activeLetter === '${letter}' ? 'bg-neutral-100 text-neutral-900' : availableLetters.includes('${letter}') ? 'text-neutral-500 hover:bg-neutral-700 hover:text-neutral-100' : 'cursor-default text-neutral-500/30'`}
+                    class="focus-visible:outline-ring mx-auto flex size-5 items-center justify-center rounded text-xs font-medium focus-visible:outline-2"
+                  >
+                    {letter}
+                  </button>
+                ))
+              }
+            </nav>
           </div>
 
           <div
