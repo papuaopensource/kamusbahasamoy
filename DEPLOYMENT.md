@@ -17,20 +17,21 @@ Buat environment GitHub bernama `production`, kemudian tambahkan secrets berikut
 
 ## Persiapan Satu Kali pada Debian
 
-Seluruh konfigurasi server disiapkan di luar workflow. Sebelum deployment dijalankan, server harus sudah memiliki:
+Seluruh konfigurasi service tetap disiapkan di luar workflow. Sebelum deployment dijalankan, server harus sudah memiliki:
 
-- repository pada `/var/www/kamusbahasamoy` dengan akses ke remote Git;
-- file environment production pada `/var/www/kamusbahasamoy/apps/api/.env`;
+- akses tulis ke `/var/www/kamusbahasamoy` atau `/var/www` untuk clone pertama;
+- deploy key GitHub pada `~/.ssh/kamusbahasamoy`;
+- file environment production pada `/var/www/kamusbahasamoy/apps/api/.env` sebelum aplikasi dijalankan;
 - Git, curl, dan uv yang dapat dipanggil oleh pengguna deployment;
 - service Supervisor bernama `kamusbahasamoy` yang sudah dikonfigurasi;
 - izin untuk menjalankan `sudo supervisorctl restart kamusbahasamoy` tanpa prompt interaktif.
 
-Workflow tidak membuat direktori aplikasi, melakukan clone awal, menulis `.env`, atau mengubah konfigurasi Supervisor.
+Workflow melakukan clone awal jika `/var/www/kamusbahasamoy/.git` belum tersedia. Workflow tidak menulis `.env` atau mengubah konfigurasi Supervisor.
 
 Workflow menggunakan tiga job berurutan:
 
-1. **Sync Code and Dependencies** mengambil commit terbaru dan menyinkronkan dependensi production menggunakan lockfile uv.
-2. **Migrate and Seed Database** menjalankan migrasi Alembic lalu memuat ulang data awal.
+1. **Pull Latest Commit on Server** melakukan clone jika diperlukan, lalu mengambil commit terbaru.
+2. **Install Dependencies and Prepare Database** menyinkronkan dependensi production, menjalankan migrasi Alembic, lalu memuat ulang data awal.
 3. **Restart and Verify FastAPI** me-restart service Supervisor yang sudah tersedia, lalu memeriksa endpoint health.
 
 Job berikutnya hanya berjalan jika job sebelumnya berhasil, sehingga kegagalan sinkronisasi, migrasi, atau restart dapat terlihat secara terpisah di GitHub Actions.
