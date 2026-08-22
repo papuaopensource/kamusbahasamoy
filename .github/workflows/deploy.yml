@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  sync-backend:
-    name: Sync Backend Code and Dependencies
+  pull-latest-commit:
+    name: Pull Latest Commit on Server
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 15
@@ -26,7 +26,7 @@ jobs:
       DEPLOY_COMMIT: ${{ github.sha }}
 
     steps:
-      - name: Sync Backend Code and Dependencies
+      - name: Clone or update backend repository
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -42,26 +42,27 @@ jobs:
             ssh-add "$HOME/.ssh/kamusbahasamoy"
 
             APP_DIR="/var/www/kamusbahasamoy"
-            API_DIR="$APP_DIR/apps/api"
+            REPOSITORY="git@github.com:papuaopensource/kamusbahasamoy.git"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone "$REPOSITORY" "$APP_DIR"
+            fi
 
             cd "$APP_DIR"
             git fetch --prune origin main
             git checkout --force -B main "$DEPLOY_COMMIT"
 
-            cd "$API_DIR"
-            uv sync --locked --no-dev
+            echo "Commit $DEPLOY_COMMIT berhasil disinkronkan."
 
-            echo "Kode backend dan dependensi berhasil disinkronkan."
-
-  migrate-database:
-    name: Migrate and Seed Database
-    needs: sync-backend
+  prepare-backend:
+    name: Install Dependencies and Prepare Database
+    needs: pull-latest-commit
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 10
 
     steps:
-      - name: Apply migrations and seed data
+      - name: Install dependencies, migrate, and seed
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -75,14 +76,15 @@ jobs:
             API_DIR="/var/www/kamusbahasamoy/apps/api"
 
             cd "$API_DIR"
+            uv sync --locked --no-dev
             ./.venv/bin/alembic upgrade head
             ./.venv/bin/python scripts/seed.py
 
-            echo "Migrasi dan seed database berhasil dijalankan."
+            echo "Dependensi, migrasi, dan seed database berhasil disiapkan."
 
-  restart-backend:
+  restart-services:
     name: Restart and Verify FastAPI
-    needs: migrate-database
+    needs: prepare-backend
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 10
