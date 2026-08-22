@@ -6,7 +6,7 @@ Terima kasih telah mempertimbangkan untuk berkontribusi pada proyek Website Kamu
 
 Sebelum mulai, pastikan Anda telah menginstal:
 
-- [Node.js](https://nodejs.org/) 20 atau lebih baru
+- [Node.js](https://nodejs.org/) 22.12 atau lebih baru
 - [pnpm](https://pnpm.io/installation) 10 atau lebih baru
 - [Python](https://www.python.org/) 3.13 atau lebih baru
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) — package manager Python

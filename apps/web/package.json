@@ -12,9 +12,9 @@
     "test": "echo 'No tests for web yet'"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.14",
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/mdx": "^7.0.7",
+    "@astrojs/react": "^6.0.4",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/inter": "^5.2.5",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
@@ -31,7 +31,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
-    "astro": "^5.18.1",
+    "astro": "^7.2.4",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
