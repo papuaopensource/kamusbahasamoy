@@ -95,7 +95,7 @@ export default (Alpine: Alpine) => {
           : exact.text;
         this.currentWord = exact;
         this.relatedWords = this.relatedSourceWords(exact);
-        this.translationHint = "Padanan langsung ditemukan di dalam kamus.";
+        this.translationHint = "";
         return;
       }
 
