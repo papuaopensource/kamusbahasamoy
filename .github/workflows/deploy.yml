@@ -18,37 +18,38 @@ concurrency:
 
 jobs:
   sync-backend:
-    name: Sync Code and Dependencies
+    name: Sync Backend Code and Dependencies
     runs-on: ubuntu-latest
     environment: production
-    timeout-minutes: 15
-    env:
-      DEPLOY_COMMIT: ${{ github.sha }}
-
     steps:
-      - name: Sync backend on Debian server
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          envs: DEPLOY_COMMIT
-          command_timeout: 10m
-          script: |
-            set -eu
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        known_hosts: github.com
 
-            APP_DIR="/var/www/kamusbahasamoy"
-            API_DIR="$APP_DIR/apps/api"
+    - name: Sync Backend Code and Dependencies
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/kamusbahasamoy
 
-            cd "$APP_DIR"
-            git fetch --prune origin main
-            git checkout --force -B main "$DEPLOY_COMMIT"
+          APP_DIR="/var/www/kamusbahasamoy"
+          API_DIR="$APP_DIR/apps/api"
 
-            cd "$API_DIR"
-            uv sync --locked --no-dev
+          cd "$APP_DIR"
+          git fetch --prune origin main
+          git checkout --force -B main "$DEPLOY_COMMIT"
 
-            echo "Kode backend dan dependensi berhasil disinkronkan."
+          cd "$API_DIR"
+          uv sync --locked --no-dev
+
+          echo "Kode backend dan dependensi berhasil disinkronkan."
 
   migrate-database:
     name: Migrate and Seed Database
