@@ -1,95 +1,116 @@
-name: Deploy Project to Production Server
+name: Deploy FastAPI Backend
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
-  group: deploy-production
+  group: deploy-fastapi-production
   cancel-in-progress: false
 
 jobs:
-  pull-latest-commit:
-    name: Pull Latest Commit on Server
+  sync-backend:
+    name: Sync Code and Dependencies
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 15
+    env:
+      DEPLOY_COMMIT: ${{ github.sha }}
+
     steps:
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: github.com
+      - name: Sync backend on Debian server
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          envs: DEPLOY_COMMIT
+          command_timeout: 10m
+          script: |
+            set -eu
 
-    - name: Pull Latest Commit on Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SERVER_PORT }}
-        script: |
-          eval `ssh-agent -s`
-          ssh-add ~/.ssh/kamusbahasamoy
+            APP_DIR="/var/www/kamusbahasamoy"
+            API_DIR="$APP_DIR/apps/api"
 
-          cd /var/www/
+            cd "$APP_DIR"
+            git fetch --prune origin main
+            git checkout --force -B main "$DEPLOY_COMMIT"
 
-          if [ ! -d "kamusbahasamoy" ]; then
-            git clone git@github.com:papuaopensource/kamusbahasamoy.git
-          fi
+            cd "$API_DIR"
+            uv sync --locked --no-dev
 
-          cd kamusbahasamoy
+            echo "Kode backend dan dependensi berhasil disinkronkan."
 
-          git fetch origin main
-          git reset --hard
-          git checkout -B main ${{ github.sha }}
-
-  build-assets:
-    name: Install Dependencies and Build Assets
+  migrate-database:
+    name: Migrate and Seed Database
+    needs: sync-backend
     runs-on: ubuntu-latest
     environment: production
-    needs: pull-latest-commit
+    timeout-minutes: 10
+
     steps:
-    - name: Install Dependencies and Build Assets
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SERVER_PORT }}
-        script: |
-          cd /var/www/kamusbahasamoy
+      - name: Apply migrations and seed data
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          command_timeout: 5m
+          script: |
+            set -eu
 
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            API_DIR="/var/www/kamusbahasamoy/apps/api"
 
-          export PATH="$HOME/.local/bin:$PATH"
+            cd "$API_DIR"
+            ./.venv/bin/alembic upgrade head
+            ./.venv/bin/python scripts/seed.py
 
-          # Install dependencies
-          uv sync
-          uv run manage.py tailwind install
-          
-          # Build Tailwind CSS
-          uv run manage.py tailwind build
-          
-          # Collect static files
-          uv run manage.py collectstatic --noinput
+            echo "Migrasi dan seed database berhasil dijalankan."
 
-          # Run database migrations
-          uv run manage.py migrate --noinput
-
-  restart-services:
-    name: Restart Supervisor services for kamusbahasamoy
+  restart-backend:
+    name: Restart and Verify FastAPI
+    needs: migrate-database
     runs-on: ubuntu-latest
     environment: production
-    needs: build-assets
+    timeout-minutes: 10
+    env:
+      DEPLOY_COMMIT: ${{ github.sha }}
+
     steps:
-    - name: Restart Supervisor services for kamusbahasamoy
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SERVER_PORT }}
-        script: |
-          echo "Restart Supervisor services for kamusbahasamoy"
-          sudo supervisorctl restart kamusbahasamoy
+      - name: Restart FastAPI and run health check
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          envs: DEPLOY_COMMIT
+          command_timeout: 5m
+          script: |
+            set -eu
+
+            sudo supervisorctl restart kamusbahasamoy
+
+            attempt=1
+            until curl --fail --silent --show-error http://127.0.0.1:5000/health >/dev/null; do
+              if [ "$attempt" -ge 15 ]; then
+                echo "FastAPI tidak sehat setelah restart."
+                sudo supervisorctl status kamusbahasamoy
+                exit 1
+              fi
+
+              attempt=$((attempt + 1))
+              sleep 2
+            done
+
+            echo "FastAPI berhasil di-deploy pada commit $DEPLOY_COMMIT."
